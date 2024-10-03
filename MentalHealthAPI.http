@@ -1,0 +1,6 @@
+@MentalHealthAPI_HostAddress = http://localhost:5125
+
+GET {{MentalHealthAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
