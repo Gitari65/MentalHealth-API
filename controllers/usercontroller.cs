@@ -60,3 +60,26 @@ public class UsersController : ControllerBase
         return tokenHandler.WriteToken(token);
     }
 }
+[HttpPost("register")]
+public async Task<IActionResult> Register([FromBody] RegisterModel model)
+{
+    if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+    var userExists = await _userManager.FindByNameAsync(model.Username);
+    if (userExists != null)
+        return StatusCode(StatusCodes.Status500InternalServerError, "User already exists!");
+
+    var user = new ApplicationUser()
+    {
+        UserName = model.Username,
+        Email = model.Email,
+    };
+
+    var result = await _userManager.CreateAsync(user, model.Password);
+    if (!result.Succeeded)
+        return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
+
+    return Ok("User created successfully!");
+}
+
